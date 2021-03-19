@@ -37,7 +37,11 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
-
+        // Attack trigger
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            animator.SetTrigger("Attack");
+        }
     }
 
 
