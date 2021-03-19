@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private int count;
 
     Vector2 movement;
+    UnityEvent attack_event = new UnityEvent();
 
     void Start()
     {
@@ -22,6 +24,7 @@ public class PlayerController : MonoBehaviour
         count = 0;
         winText.text = "";
         SetCountText();
+        attack_event.AddListener(Attack);
     }
 
     void Update()
@@ -31,17 +34,21 @@ public class PlayerController : MonoBehaviour
         movement = new Vector2(moveHorizontal, moveVertical);
         animator.SetFloat("Horizontal", moveHorizontal);
         animator.SetFloat("Speed", movement.sqrMagnitude);
+
+        // Attack trigger
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            movement = new Vector2(0, 0);
+            attack_event.Invoke();
+        }
     }
 
 
     void FixedUpdate()
     {
         rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
-        // Attack trigger
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            animator.SetTrigger("Attack");
-        }
+        
+        
     }
 
 
@@ -61,5 +68,10 @@ public class PlayerController : MonoBehaviour
         {
             winText.text = "You win!";
         }
+    }
+
+    void Attack()
+    {
+        animator.SetTrigger("Attack");
     }
 }
