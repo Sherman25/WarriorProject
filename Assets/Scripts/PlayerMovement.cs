@@ -11,12 +11,6 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalMove;
     private float verticalMove;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-            
-    }
-
     // Update is called once per frame
     void Update()
     {

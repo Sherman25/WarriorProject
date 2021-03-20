@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private int count;
     private bool attacking = false;
     private bool attacked = false;
+    private bool facingRight = true;
 
     Vector2 movement;
     UnityEvent attack_event = new UnityEvent();
@@ -34,25 +35,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        /*float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-        if (moveHorizontal < 0)
-        {
-            transform.localScale = new Vector3(-3, 3, 1);
-        }
-        if (moveHorizontal > 0)
-        {
-            transform.localScale = new Vector3(3, 3, 1);
-        }
-        movement = new Vector2(moveHorizontal * speed, moveVertical * speed);
-        animator.SetFloat("Horizontal", moveHorizontal);
-        animator.SetFloat("Speed", movement.sqrMagnitude);
         // Attack trigger
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            movement = new Vector2(0, 0);
+            //movement = new Vector2(0, 0);
+            //attacking = true;
             attack_event.Invoke();
-        }*/
+        }
     }
 
 
@@ -69,6 +58,20 @@ public class PlayerController : MonoBehaviour
             movement = new Vector2(horizontalMove, verticalMove);
             rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
         }
+        if(horizontalMove > 0 && !facingRight)
+        {
+            Flip();
+        }
+        else if(horizontalMove < 0 && facingRight)
+        {
+            Flip();
+        }
+    }
+
+    private void Flip()
+    {
+        facingRight = !facingRight;
+        transform.Rotate(0f, 180f, 0f);
     }
 
 
