@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb2d;
     private int count;
+    private bool attacking = false;
+    private bool attacked = false;
 
     Vector2 movement;
     UnityEvent attack_event = new UnityEvent();
@@ -32,13 +34,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
+        /*float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-        if(moveHorizontal < 0)
+        if (moveHorizontal < 0)
         {
             transform.localScale = new Vector3(-3, 3, 1);
         }
-        if(moveHorizontal > 0)
+        if (moveHorizontal > 0)
         {
             transform.localScale = new Vector3(3, 3, 1);
         }
@@ -50,13 +52,23 @@ public class PlayerController : MonoBehaviour
         {
             movement = new Vector2(0, 0);
             attack_event.Invoke();
-        }
+        }*/
     }
 
 
     void FixedUpdate()
     {
-        rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);  
+        //rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);  
+    }
+
+    public void Move(float horizontalMove, float verticalMove)
+    {
+        // Move only if not attacking and not attacked
+        if (!attacking && !attacked)
+        {
+            movement = new Vector2(horizontalMove, verticalMove);
+            rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
+        }
     }
 
 

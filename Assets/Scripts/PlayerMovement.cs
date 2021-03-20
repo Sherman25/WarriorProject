@@ -21,8 +21,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         horizontalMove = Input.GetAxis("Horizontal") * runSpeed;
-        verticalMove = InputGetAxis("Vertical");
-        animator.SetFloat("Speed", Math.abs(horizontalMove)) * runSpeed;
+        verticalMove = Input.GetAxis("Vertical") * runSpeed;
+        animator.SetFloat("Speed", Mathf.Abs(horizontalMove)) ;
     }
 
     void FixedUpdate()
