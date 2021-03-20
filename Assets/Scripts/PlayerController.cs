@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public Transform attackPoint;
     public float attackRange = 0.5f;
+    public int attackDamage = 40;
     public LayerMask enemyLayers;
 
     private Rigidbody2D rb2d;
@@ -88,12 +89,18 @@ public class PlayerController : MonoBehaviour
         // Damage them
         foreach(Collider2D enemy in hitEnemies)
         {
-            Debug,Log("We hit " + enemy.name);
+            Debug.Log("We hit " + enemy.name);
+            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
         }
     }
 
     void OnDrawGizmosSelected()
     {
+        if(attackPoint == null)
+        {
+            return;
+        }
+
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
