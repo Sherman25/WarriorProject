@@ -91,4 +91,9 @@ public class PlayerController : MonoBehaviour
             Debug,Log("We hit " + enemy.name);
         }
     }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
 }
