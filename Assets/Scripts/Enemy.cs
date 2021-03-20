@@ -6,16 +6,21 @@ public class Enemy : MonoBehaviour
 {
     public int maxHealth = 100;
     private int currentHealth;
+    public float attackRange = 0.5f;
+    public int attackDamage = 40;
+    public Transform attackPoint;
+    public Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentHealth = maxHealth;
     }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        animator.SetTrigger("Hurt");
 
         // Play hearth animation
 
@@ -29,5 +34,16 @@ public class Enemy : MonoBehaviour
     void Fail()
     {
         Debug.Log("Enemy fail!");
+        animator.SetTrigger("Fail");
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+        {
+            return;
+        }
+
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
