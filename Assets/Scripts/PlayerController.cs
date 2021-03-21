@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //movement = new Vector2(0, 0);
-            //attacking = true;
+            attacking = true;
             attack_event.Invoke();
         }
     }
@@ -56,6 +56,8 @@ public class PlayerController : MonoBehaviour
         if (!attacking && !attacked)
         {
             movement = new Vector2(horizontalMove, verticalMove);
+            animator.SetFloat("Horizontal", horizontalMove);
+            animator.SetFloat("Speed", movement.sqrMagnitude);
             rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
         }
         if(horizontalMove > 0 && !facingRight)
@@ -66,12 +68,18 @@ public class PlayerController : MonoBehaviour
         {
             Flip();
         }
+
     }
 
     private void Flip()
     {
         facingRight = !facingRight;
         transform.Rotate(0f, 180f, 0f);
+    }
+
+    private void MoveAvailable()
+    {
+        attacking = false;
     }
 
 
