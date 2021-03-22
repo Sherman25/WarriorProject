@@ -59,16 +59,15 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("Horizontal", horizontalMove);
             animator.SetFloat("Speed", movement.sqrMagnitude);
             rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
+            if (horizontalMove > 0 && !facingRight)
+            {
+                Flip();
+            }
+            else if (horizontalMove < 0 && facingRight)
+            {
+                Flip();
+            }
         }
-        if(horizontalMove > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if(horizontalMove < 0 && facingRight)
-        {
-            Flip();
-        }
-
     }
 
     private void Flip()

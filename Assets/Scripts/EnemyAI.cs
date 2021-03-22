@@ -6,6 +6,9 @@ using Pathfinding;
 public class EnemyAI : MonoBehaviour
 {
     public Transform target;
+    public Transform enemy;
+
+    public Animator animator;
 
     public float speed = 200f;
     public float nextWaypointDistance = 3f;
@@ -17,6 +20,8 @@ public class EnemyAI : MonoBehaviour
     Seeker seeker;
     Rigidbody2D rb;
 
+    private bool facingRight = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +29,6 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         InvokeRepeating("UpdatePath", 0f, .5f);
-        
     }
 
     void UpdatePath()
@@ -69,6 +73,16 @@ public class EnemyAI : MonoBehaviour
         if(distance < nextWaypointDistance)
         {
             currentWaypoint++;
+        }
+
+        animator.SetFloat("Force", Mathf.Abs(force.x));
+        if (force.x >= 0.01f)
+        {
+            enemy.localScale = new Vector3(5f, 5f, 1f);
+        }
+        else if (force.x < 0.01f)
+        {
+            enemy.localScale = new Vector3(-5f, 5f, 1f);
         }
     }
 }

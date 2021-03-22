@@ -12,14 +12,14 @@ public class EnemyGFX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(aiPath.desiredVelocity.x >= 0.01f && !facingRight)
+        /*if(aiPath.desiredVelocity.x >= 0.01f && !facingRight)
         {
             Flip();
         }
         else if (aiPath.desiredVelocity.x < 0.01f && facingRight)
         {
             Flip();
-        }
+        }*/
     }
 
     private void Flip()
