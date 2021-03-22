@@ -7,15 +7,20 @@ public class EnemyAI : MonoBehaviour
 {
     public Transform target;
     public Transform enemy;
-
+    public Transform attackPoint;
+    public LayerMask enemyLayer;
     public Animator animator;
 
     public float speed = 200f;
     public float nextWaypointDistance = 3f;
+    public float attackRange = 0.5f;
 
+    public int attackDamage = 40;
+    
     Path path;
     int currentWaypoint = 0;
     bool reachedEndOfPath = false;
+    bool canMove = true;
 
     Seeker seeker;
     Rigidbody2D rb;
@@ -66,23 +71,63 @@ public class EnemyAI : MonoBehaviour
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
         Vector2 force = direction * speed * Time.deltaTime;
 
-        rb.AddForce(force);
-
-        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
-
-        if(distance < nextWaypointDistance)
+        if (canMove)
         {
-            currentWaypoint++;
+            rb.AddForce(force);
+
+            float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+
+            if (distance < nextWaypointDistance)
+            {
+                currentWaypoint++;
+            }
+
+            animator.SetFloat("Force", Mathf.Abs(force.x));
+            if (force.x > 0)
+            {
+                enemy.localScale = new Vector3(5f, 5f, 1f);
+            }
+            else if (force.x < 0)
+            {
+                enemy.localScale = new Vector3(-5f, 5f, 1f);
+            }
+        }
+        
+
+        Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
+        if (hitEnemy != null)
+        {
+            canMove = false;
+            Attack(hitEnemy);
+        }
+    }
+
+    void Attack(Collider2D hitEnemy)
+    {
+        // Play an atack animation
+        animator.SetFloat("Force", Mathf.Abs(0));
+        animator.SetTrigger("Attack");
+
+        // Detect enemy in range of attack
+        //Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
+
+        // Damage
+        Debug.Log("We hit " + hitEnemy.name);
+        //hitEnemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+    }
+
+    void CanMove()
+    {
+        canMove = true;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+        {
+            return;
         }
 
-        animator.SetFloat("Force", Mathf.Abs(force.x));
-        if (force.x >= 0.01f)
-        {
-            enemy.localScale = new Vector3(5f, 5f, 1f);
-        }
-        else if (force.x < 0.01f)
-        {
-            enemy.localScale = new Vector3(-5f, 5f, 1f);
-        }
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
