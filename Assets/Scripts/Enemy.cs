@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     private int currentHealth;
     public float attackRange = 0.5f;
     public int attackDamage = 40;
-    //public Transform attackPoint;
+    public Transform attackPoint;
     public Animator animator;
 
 
@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
         animator.SetBool("Failed", true);
     }
 
-    /*void OnDrawGizmosSelected()
+    void OnDrawGizmosSelected()
     {
         if (attackPoint == null)
         {
@@ -51,5 +51,5 @@ public class Enemy : MonoBehaviour
         }
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-    }*/
+    }
 }
