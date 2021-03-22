@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     public Transform attackPoint;
     public Animator animator;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +36,11 @@ public class Enemy : MonoBehaviour
     {
         Debug.Log("Enemy fail!");
         animator.SetTrigger("Fail");
+    }
+
+    void SetFailed()
+    {
+        animator.SetBool("Failed", true);
     }
 
     void OnDrawGizmosSelected()
