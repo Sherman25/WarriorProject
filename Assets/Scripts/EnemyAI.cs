@@ -12,11 +12,12 @@ public class EnemyAI : MonoBehaviour
     public Animator animator;
 
     public float speed = 200f;
+    public int attackDamage = 40;
+    public int maxHealth = 100;
+    private int currentHealth;
     public float nextWaypointDistance = 3f;
     public float attackRange = 0.5f;
 
-    public int attackDamage = 40;
-    
     Path path;
     int currentWaypoint = 0;
     bool reachedEndOfPath = false;
@@ -32,7 +33,7 @@ public class EnemyAI : MonoBehaviour
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-
+        currentHealth = maxHealth;
         InvokeRepeating("UpdatePath", 0f, .5f);
     }
 
@@ -116,7 +117,32 @@ public class EnemyAI : MonoBehaviour
         //hitEnemy.GetComponent<Enemy>().TakeDamage(attackDamage);
     }
 
-    void CanMove()
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        animator.SetTrigger("Hurt");
+
+        // Play hearth animation
+
+        // Play fail animation
+        if (currentHealth <= 0)
+        {
+            Fail();
+        }
+    }
+
+    void Fail()
+    {
+        Debug.Log("Enemy fail!");
+        animator.SetTrigger("Fail");
+    }
+
+    void SetFailed()
+    {
+        animator.SetBool("Failed", true);
+    }
+
+    public void SetCanMove()
     {
         canMove = true;
     }
