@@ -107,7 +107,7 @@ public class EnemyAI : MonoBehaviour
         // Play an atack animation
         animator.SetFloat("Force", Mathf.Abs(0));
         animator.SetTrigger("Attack");
-
+        animator.SetBool("Attacking", true);
         // Detect enemy in range of attack
         //Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
 
