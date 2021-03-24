@@ -13,12 +13,13 @@ public class PlayerController : MonoBehaviour
     public Transform attackPoint;
     public float attackRange = 0.5f;
     public int attackDamage = 40;
+    public int maxHealth = 100;
+    public int currentHealth;
     public LayerMask enemyLayers;
 
     private Rigidbody2D rb2d;
     private int count;
-    private bool attacking = false;
-    private bool attacked = false;
+    private bool canMove = true;
     private bool facingRight = true;
 
     Vector2 movement;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        currentHealth = maxHealth;
         rb2d = GetComponent<Rigidbody2D>();
         count = 0;
         winText.text = "";
@@ -39,7 +41,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //movement = new Vector2(0, 0);
-            attacking = true;
+            canMove = false;
             attack_event.Invoke();
         }
     }
@@ -53,7 +55,7 @@ public class PlayerController : MonoBehaviour
     public void Move(float horizontalMove, float verticalMove)
     {
         // Move only if not attacking and not attacked
-        if (!attacking && !attacked)
+        if (canMove)
         {
             movement = new Vector2(horizontalMove, verticalMove);
             animator.SetFloat("Horizontal", horizontalMove);
@@ -68,6 +70,7 @@ public class PlayerController : MonoBehaviour
                 Flip();
             }
         }
+
     }
 
     private void Flip()
@@ -78,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveAvailable()
     {
-        attacking = false;
+        canMove = true;
     }
 
 
@@ -113,8 +116,32 @@ public class PlayerController : MonoBehaviour
         foreach(Collider2D enemy in hitEnemies)
         {
             Debug.Log("We hit " + enemy.name);
-            enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+            Debug.Log(enemy.GetComponent<EnemyAI>());
+            enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        canMove = false;
+        currentHealth -= damage;
+        animator.SetTrigger("Hurt");
+
+        // Play hearth animation
+
+        // Play fail animation
+        if (currentHealth <= 0)
+        {
+            Fail();
+        }
+    }
+
+    void Fail()
+    {
+        canMove = false;
+        animator.SetBool("Fail", true);
+        Debug.Log("Player fail!");
+        animator.SetTrigger("Killed");
     }
 
     void OnDrawGizmosSelected()

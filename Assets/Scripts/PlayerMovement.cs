@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public PlayerController controller;
-    public Animator animator;
+    //public Animator animator;
     public float runSpeed;
 
     private float horizontalMove;
@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalMove = Input.GetAxis("Horizontal") * runSpeed;
         verticalMove = Input.GetAxis("Vertical") * runSpeed;
-        animator.SetFloat("Speed", Mathf.Abs(horizontalMove)) ;
+        //animator.SetFloat("Speed", Mathf.Abs(horizontalMove)) ;
     }
 
     void FixedUpdate()

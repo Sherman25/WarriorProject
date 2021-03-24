@@ -6,7 +6,7 @@ using Pathfinding;
 public class EnemyAI : MonoBehaviour
 {
     public Transform target;
-    public Transform enemy;
+    //public Transform enemy;
     public Transform attackPoint;
     public LayerMask enemyLayer;
     public Animator animator;
@@ -86,39 +86,56 @@ public class EnemyAI : MonoBehaviour
             animator.SetFloat("Force", Mathf.Abs(force.x));
             if (force.x > 0)
             {
-                enemy.localScale = new Vector3(5f, 5f, 1f);
+                transform.localScale = new Vector3(5f, 5f, 1f);
             }
             else if (force.x < 0)
             {
-                enemy.localScale = new Vector3(-5f, 5f, 1f);
+                transform.localScale = new Vector3(-5f, 5f, 1f);
             }
         }
         
 
         Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
-        if (hitEnemy != null)
+        if (hitEnemy != null && canMove == true)
         {
             canMove = false;
             Attack(hitEnemy);
         }
     }
 
+    void Remove()
+    {
+        this.gameObject.SetActive(false);
+    }
+
     void Attack(Collider2D hitEnemy)
     {
         // Play an atack animation
-        animator.SetFloat("Force", Mathf.Abs(0));
+        animator.SetFloat("Force", 0);
         animator.SetTrigger("Attack");
         animator.SetBool("Attacking", true);
         // Detect enemy in range of attack
         //Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
 
-        // Damage
-        Debug.Log("We hit " + hitEnemy.name);
+        
         //hitEnemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+    }
+
+    public void CheckFireArea()
+    {
+        Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
+        if (hitEnemy != null)
+        {
+            hitEnemy.GetComponent<PlayerController>().TakeDamage(attackDamage);
+            // Damage
+            Debug.Log("We hit " + hitEnemy.name);
+        }
     }
 
     public void TakeDamage(int damage)
     {
+        canMove = false;
+        animator.SetFloat("Force", 0);
         currentHealth -= damage;
         animator.SetTrigger("Hurt");
 
