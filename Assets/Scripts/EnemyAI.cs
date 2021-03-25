@@ -10,6 +10,7 @@ public class EnemyAI : MonoBehaviour
     public Transform attackPoint;
     public LayerMask enemyLayer;
     public Animator animator;
+    public Collider2D collider;
 
     public float speed = 200f;
     public int attackDamage = 40;
@@ -74,24 +75,30 @@ public class EnemyAI : MonoBehaviour
 
         if (canMove)
         {
+            animator.SetBool("Walk", true);
             rb.AddForce(force);
+        }
+        else
+        {
+            rb.AddForce(new Vector2(0, 0));
+        }
 
-            float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
 
-            if (distance < nextWaypointDistance)
-            {
-                currentWaypoint++;
-            }
+        if (distance < nextWaypointDistance)
+        {
+            currentWaypoint++;
+        }
 
-            animator.SetFloat("Force", Mathf.Abs(force.x));
-            if (force.x > 0)
-            {
-                transform.localScale = new Vector3(5f, 5f, 1f);
-            }
-            else if (force.x < 0)
-            {
-                transform.localScale = new Vector3(-5f, 5f, 1f);
-            }
+        //animator.SetFloat("Force", Mathf.Abs(force.x));
+        
+        if (force.x > 0)
+        {
+            transform.localScale = new Vector3(5f, 5f, 1f);
+        }
+        else if (force.x < 0)
+        {
+            transform.localScale = new Vector3(-5f, 5f, 1f);
         }
         
 
@@ -99,26 +106,23 @@ public class EnemyAI : MonoBehaviour
         if (hitEnemy != null && canMove == true)
         {
             canMove = false;
+            animator.SetBool("Walk", false);
             Attack(hitEnemy);
         }
     }
 
     void Remove()
     {
-        this.gameObject.SetActive(false);
+        collider.gameObject.SetActive(false);
     }
 
     void Attack(Collider2D hitEnemy)
     {
         // Play an atack animation
+        //rb.AddForce(new Vector2(0, 0));
         animator.SetFloat("Force", 0);
         animator.SetTrigger("Attack");
         animator.SetBool("Attacking", true);
-        // Detect enemy in range of attack
-        //Collider2D hitEnemy = Physics2D.OverlapCircle(attackPoint.position, attackRange, enemyLayer);
-
-        
-        //hitEnemy.GetComponent<Enemy>().TakeDamage(attackDamage);
     }
 
     public void CheckFireArea()
@@ -134,12 +138,13 @@ public class EnemyAI : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        //rb.AddForce(new Vector2(0, 0));
         canMove = false;
-        animator.SetFloat("Force", 0);
+        animator.SetBool("Walk", false);
         currentHealth -= damage;
-        animator.SetTrigger("Hurt");
 
         // Play hearth animation
+        animator.SetTrigger("Hurt");
 
         // Play fail animation
         if (currentHealth <= 0)
@@ -150,13 +155,18 @@ public class EnemyAI : MonoBehaviour
 
     void Fail()
     {
+        canMove = false;
         Debug.Log("Enemy fail!");
         animator.SetTrigger("Fail");
+        animator.SetBool("Failed", true);
+        animator.SetBool("Walk", false);
     }
 
     void SetFailed()
+
     {
         animator.SetBool("Failed", true);
+
     }
 
     public void SetCanMove()
