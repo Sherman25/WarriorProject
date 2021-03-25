@@ -12,15 +12,20 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public Transform attackPoint;
     public float attackRange = 0.5f;
+    public float runSpeed;
     public int attackDamage = 40;
     public int maxHealth = 100;
     public int currentHealth;
     public LayerMask enemyLayers;
+    public AudioManager audioManager;
 
     private Rigidbody2D rb2d;
     private int count;
     private bool canMove = true;
     private bool facingRight = true;
+
+    private float horizontalMove;
+    private float verticalMove;
 
     Vector2 movement;
     UnityEvent attack_event = new UnityEvent();
@@ -37,6 +42,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        horizontalMove = Input.GetAxis("Horizontal") * runSpeed;
+        verticalMove = Input.GetAxis("Vertical") * runSpeed;
         // Attack trigger
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -49,7 +56,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        //rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);  
+        //rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
+        Move(horizontalMove, verticalMove);
     }
 
     public void Move(float horizontalMove, float verticalMove)
@@ -57,6 +65,7 @@ public class PlayerController : MonoBehaviour
         // Move only if not attacking and not attacked
         if (canMove)
         {
+            audioManager.Play("PlayerRun");
             movement = new Vector2(horizontalMove, verticalMove);
             animator.SetFloat("Horizontal", horizontalMove);
             animator.SetFloat("Speed", movement.sqrMagnitude);
