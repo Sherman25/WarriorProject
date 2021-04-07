@@ -75,8 +75,8 @@ public class EnemyAI : MonoBehaviour
 
         if (canMove)
         {
-            animator.SetBool("Walk", true);
             rb.AddForce(force);
+            animator.SetBool("Walk", true);
         }
         else
         {
@@ -183,4 +183,5 @@ public class EnemyAI : MonoBehaviour
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
+
 }

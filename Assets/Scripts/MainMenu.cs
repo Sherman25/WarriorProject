@@ -10,6 +10,21 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    public void ReplayIfLose()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+
+    public void ReplayIfWon()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
+    }
+
+    public void ReplayGame()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void QuitGame()
     {
         Debug.Log("QUIT!");

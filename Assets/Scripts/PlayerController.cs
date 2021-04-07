@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private int count;
     private bool canMove = true;
     private bool facingRight = true;
+    private int damageToDeal;
+    private int currentDamage = 0;
 
     private float horizontalMove;
     private float verticalMove;
@@ -32,11 +35,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        SetDamageToDeal();
         currentHealth = maxHealth;
         rb2d = GetComponent<Rigidbody2D>();
         count = 0;
         winText.text = "";
-        SetCountText();
+        SetCurrentHealth();
         attack_event.AddListener(Attack);
     }
 
@@ -47,25 +51,12 @@ public class PlayerController : MonoBehaviour
         // Attack trigger
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //movement = new Vector2(0, 0);
             canMove = false;
             attack_event.Invoke();
         }
-    }
 
-
-    void FixedUpdate()
-    {
-        //rb2d.MovePosition(rb2d.position + movement * Time.fixedDeltaTime);
-        Move(horizontalMove, verticalMove);
-    }
-
-    public void Move(float horizontalMove, float verticalMove)
-    {
-        // Move only if not attacking and not attacked
         if (canMove)
         {
-            audioManager.Play("PlayerRun");
             movement = new Vector2(horizontalMove, verticalMove);
             animator.SetFloat("Horizontal", horizontalMove);
             animator.SetFloat("Speed", movement.sqrMagnitude);
@@ -79,8 +70,8 @@ public class PlayerController : MonoBehaviour
                 Flip();
             }
         }
-
     }
+
 
     private void Flip()
     {
@@ -101,16 +92,12 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             count += 1;
-            SetCountText();
+            SetCurrentHealth();
         }
     }
-    void SetCountText()
+    void SetCurrentHealth()
     {
-        countText.text = "Count: " + count.ToString();
-        if(count >= 4)
-        {
-            winText.text = "You win!";
-        }
+        countText.text = "Current Health: " + currentHealth.ToString();
     }
 
     void Attack()
@@ -127,6 +114,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("We hit " + enemy.name);
             Debug.Log(enemy.GetComponent<EnemyAI>());
             enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
+            currentDamage += attackDamage;
+            if (currentDamage >= damageToDeal)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+            }
         }
     }
 
@@ -134,8 +126,8 @@ public class PlayerController : MonoBehaviour
     {
         canMove = false;
         currentHealth -= damage;
+        SetCurrentHealth();
         animator.SetTrigger("Hurt");
-
         // Play hearth animation
 
         // Play fail animation
@@ -151,6 +143,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Fail", true);
         Debug.Log("Player fail!");
         animator.SetTrigger("Killed");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     void OnDrawGizmosSelected()
@@ -161,5 +154,12 @@ public class PlayerController : MonoBehaviour
         }
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
+
+    void SetDamageToDeal()
+    {
+        int index = SceneManager.GetActiveScene().buildIndex / 3;
+        damageToDeal = (index + 1) * 100;
+        Debug.Log("damageToDeal: " + damageToDeal);
     }
 }

@@ -21,6 +21,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        controller.Move(horizontalMove, verticalMove);
+        //controller.Move(horizontalMove, verticalMove);
     }
 }
